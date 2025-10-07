@@ -1,5 +1,9 @@
 db:
-  url: url
+  user: postgres
+  password: password
+  dbname: myapp
+  host: localhost
+  port: 5432
 logger:
   level: info
   console:
