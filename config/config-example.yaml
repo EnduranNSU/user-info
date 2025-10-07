@@ -1,0 +1,12 @@
+db:
+  url: url
+logger:
+  level: info
+  console:
+    enable: true
+    encoding: text
+  file:
+    dirpath: logs
+    enable: false
+    maxage:
+    maxsize:
