@@ -23,7 +23,7 @@ func NewUserRepository(db *sql.DB) repository.UserInfoRepository {
 
 func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *entity.UserInfo) error {
 	query := `
-        INSERT INTO user_infos (weight, height, date, age, user_id)
+        INSERT INTO user_info (weight, height, date, age, user_id)
         VALUES ($1, $2, $3, $4, $5)
     `
 	_, err := r.db.ExecContext(ctx, query,

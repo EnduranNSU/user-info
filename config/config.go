@@ -25,7 +25,11 @@ type Config struct {
 }
 
 type DbConfig struct {
-	Url string
+	User string
+	Password string
+	Dbname string
+	Host string
+	Port int32
 }
 
 type LogEncoding string

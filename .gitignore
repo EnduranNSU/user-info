@@ -76,3 +76,4 @@ config/config.yaml
 config/kubeconfig
 config/kubeconfig-inline
 bin
+config/*.sql
