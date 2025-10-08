@@ -10,7 +10,6 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/num30/config"
 	"github.com/rs/zerolog/log"
-
 	appconfig "github.com/EnduranNSU/end-user-info/config"
 	"github.com/EnduranNSU/end-user-info/internal/db/repository/impl"
 	"github.com/EnduranNSU/end-user-info/internal/logging"
@@ -63,7 +62,7 @@ func main() {
     }
 
 	//init repo
-	repo := impl.NewUserRepository(db)
+	repo, err := impl.NewUserRepository(db)
 }
 
 func toLoggerConfig(cfg appconfig.LoggerConfig) logging.Config {
