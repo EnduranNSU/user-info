@@ -8,7 +8,7 @@ logger:
   level: info
   console:
     enable: true
-    encoding: text
+    encoding: json
   file:
     dirpath: logs
     enable: false
