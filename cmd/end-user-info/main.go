@@ -6,13 +6,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres"
+	"github.com/EnduranNSU/end-user-info/internal/app"
+	appconfig "github.com/EnduranNSU/end-user-info/internal/config"
+	"github.com/EnduranNSU/end-user-info/internal/logging"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/num30/config"
 	"github.com/rs/zerolog/log"
-	appconfig "github.com/EnduranNSU/end-user-info/config"
-	"github.com/EnduranNSU/end-user-info/internal/db/repository/impl"
-	"github.com/EnduranNSU/end-user-info/internal/logging"
 )
 
 func init() {
@@ -62,7 +63,11 @@ func main() {
     }
 
 	//init repo
-	repo, err := impl.NewUserRepository(db)
+	repo, err := postgres.NewUserInfoRepository(db)
+	if err != nil {
+		return
+	}
+	_ = app.SetupServer(&repo)
 }
 
 func toLoggerConfig(cfg appconfig.LoggerConfig) logging.Config {
