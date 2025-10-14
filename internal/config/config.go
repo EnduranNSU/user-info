@@ -1,5 +1,4 @@
-package config;
-
+package config
 
 import (
 	"strings"
@@ -20,16 +19,16 @@ func GetConfigName() string {
 }
 
 type Config struct {
-	Db     DbConfig   
+	Db     DbConfig
 	Logger LoggerConfig
 }
 
 type DbConfig struct {
-	User string
+	User     string
 	Password string
-	Dbname string
-	Host string
-	Port int32
+	Dbname   string
+	Host     string
+	Port     int32
 }
 
 type LogEncoding string
