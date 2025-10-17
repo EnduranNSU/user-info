@@ -67,7 +67,11 @@ func main() {
 	if err != nil {
 		return
 	}
-	_ = app.SetupServer(&repo)
+
+	srv := app.SetupServer(repo)
+	if err := srv.StartServer(); err != nil {
+		log.Fatal().Err(err).Msg("http server stopped")
+	}
 }
 
 func toLoggerConfig(cfg appconfig.LoggerConfig) logging.Config {

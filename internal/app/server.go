@@ -1,19 +1,30 @@
 package app
 
 import (
+	"net/http"
+	"time"
+
+	httpin "github.com/EnduranNSU/end-user-info/internal/adapter/in/http"
 	"github.com/EnduranNSU/end-user-info/internal/domain"
 )
 
 type Server struct {
-	UserInfoRepository *domain.UserInfoRepository
+	Repo domain.UserInfoRepository
+	Addr string
 }
 
-func (s *Server) StartServer() {
-
+func SetupServer(repo domain.UserInfoRepository) *Server {
+	return &Server{Repo: repo, Addr: ":8080"}
 }
 
-func SetupServer(UserInfoRepository *domain.UserInfoRepository) *Server {
-	return &Server{
-		UserInfoRepository: UserInfoRepository,
+func (s *Server) StartServer() error {
+	h := httpin.NewUserInfoHandler(s.Repo)
+	engine := httpin.NewGinRouter(h)
+
+	srv := &http.Server{
+		Addr:              s.Addr,
+		Handler:           engine,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
+	return srv.ListenAndServe()
 }

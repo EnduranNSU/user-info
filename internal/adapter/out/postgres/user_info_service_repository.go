@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"embed"
 	"fmt"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/rs/zerolog/log"
@@ -14,9 +13,9 @@ import (
 )
 
 const (
-	CREATE_USER_INFO                 = "create_user_info"
-	GET_LATEST_USER_INFO_BY_USER_ID  = "get_latest_user_info_by_user_id"
-	GET_ALL_USER_INFO_BY_USER_ID     = "get_all_user_info_by_user_id"
+	CREATE_USER_INFO                = "create_user_info"
+	GET_LATEST_USER_INFO_BY_USER_ID = "get_latest_user_info_by_user_id"
+	GET_ALL_USER_INFO_BY_USER_ID    = "get_all_user_info_by_user_id"
 )
 
 //go:embed query/*
@@ -57,7 +56,7 @@ func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *domai
 	query := r.queries[CREATE_USER_INFO]
 
 	_, err := r.db.ExecContext(ctx, query,
-		info.Weight, info.Height, time.Now(),
+		info.Weight, info.Height, info.Date,
 		info.Age, info.UserID,
 	)
 
