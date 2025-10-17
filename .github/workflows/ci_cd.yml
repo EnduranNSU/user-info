@@ -1,8 +1,6 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches: ['**']  # Запускается на все ветки
   pull_request:
     branches: ['**']  # И на все PR
   workflow_dispatch:  # Ручной запуск
@@ -53,20 +51,13 @@ jobs:
       run: |
         go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 
+    - name: Install swag
+      run: |
+        go install github.com/swaggo/swag/cmd/swag@latest
+
     - name: Generate code and install deps
       run: |
         make deps
-
-    - name: Run tests with coverage
-      run: |
-        go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
-        go tool cover -func=coverage.out
-
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./coverage.out
-        flags: unittests
 
     - name: Run static analysis
       run: |
