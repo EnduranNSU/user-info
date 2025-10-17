@@ -65,7 +65,7 @@ func main() {
 	// Init repo - теперь без возврата ошибки
 	repo := postgres.NewUserInfoRepository(db)
 
-	srv := app.SetupServer(repo)
+	srv := app.SetupServer(repo, cfg.Http.Addr)
 	if err := srv.StartServer(); err != nil {
 		log.Fatal().Err(err).Msg("http server stopped")
 	}

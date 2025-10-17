@@ -13,8 +13,8 @@ type Server struct {
 	Addr string
 }
 
-func SetupServer(repo domain.UserInfoRepository) *Server {
-	return &Server{Repo: repo, Addr: ":8080"}
+func SetupServer(repo domain.UserInfoRepository, addr string) *Server {
+	return &Server{Repo: repo, Addr: addr}
 }
 
 func (s *Server) StartServer() error {

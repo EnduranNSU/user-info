@@ -13,7 +13,7 @@ import (
 
 type UserInfoHandler struct {
 	repo domain.UserInfoRepository
-}
+} // СНЕСТИ. надо инжектить в адаптер
 
 func NewUserInfoHandler(repo domain.UserInfoRepository) *UserInfoHandler {
 	return &UserInfoHandler{repo: repo}

@@ -167,8 +167,8 @@ const docTemplate = `{
                 },
                 "height": {
                     "type": "integer",
-                    "maximum": 250,
-                    "minimum": 50,
+                    "maximum": 300,
+                    "minimum": 1,
                     "example": 175
                 },
                 "user_id": {

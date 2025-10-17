@@ -13,7 +13,7 @@ func NewGinRouter(h *UserInfoHandler) *gin.Engine {
 	r.Use(gin.Logger(), gin.Recovery())
 
 	r.StaticFile("/openapi.yaml", "docs/swagger.yaml")
-	
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	api := r.Group("/api/v1")

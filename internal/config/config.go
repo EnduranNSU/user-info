@@ -21,6 +21,11 @@ func GetConfigName() string {
 type Config struct {
 	Db     DbConfig
 	Logger LoggerConfig
+	Http   HttpConfig
+}
+
+type HttpConfig struct {
+	Addr string `default:":8080"`
 }
 
 type DbConfig struct {
