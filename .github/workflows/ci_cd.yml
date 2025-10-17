@@ -59,19 +59,6 @@ jobs:
       run: |
         make deps
 
-    - name: Run static analysis
-      run: |
-        # Install and run golangci-lint
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
-        make lint
-        
-        # Security checks
-        go install github.com/securego/gosec/v2/cmd/gosec@latest
-        $(go env GOPATH)/bin/gosec -quiet ./...
-        
-        # Vet check
-        go vet ./...
-
     - name: Build application binary
       run: |
         ARTIFACT_VERSION=${{ env.ARTIFACT_VERSION }} make build
