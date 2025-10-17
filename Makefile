@@ -1,5 +1,11 @@
+# Generating code
+gen:
+	@echo "Generating code..."
+	@cd config && sqlc generate
+	@echo "Code generated successfully"
+
 # Install dependencies
-deps:
+deps: gen
 	@echo "Installing dependencies..."
 	@go generate ./...
 	@go mod download
@@ -7,7 +13,7 @@ deps:
 
 # Build the application
 ARTIFACT_VERSION ?= 0.0.0-local
-build: deps
+build: gen deps
 	@echo "Building..."
 	@go build \
 	-o ./bin/end-user-info \

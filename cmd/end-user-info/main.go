@@ -45,7 +45,7 @@ func main() {
 	// Setup logger
 	logging.SetupLogger(toLoggerConfig(cfg.Logger))
 
-	//Open db
+	// Open db
 	db, err := sql.Open("postgres",
 		fmt.Sprintf(
 			"user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
@@ -62,11 +62,8 @@ func main() {
 		log.Fatal().Stack().Err(err).Msgf("Failed to ping database: %v", err)
 	}
 
-	//init repo
-	repo, err := postgres.NewUserInfoRepository(db)
-	if err != nil {
-		return
-	}
+	// Init repo - теперь без возврата ошибки
+	repo := postgres.NewUserInfoRepository(db)
 
 	srv := app.SetupServer(repo)
 	if err := srv.StartServer(); err != nil {

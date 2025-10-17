@@ -19,6 +19,17 @@ func NewUserInfoHandler(repo domain.UserInfoRepository) *UserInfoHandler {
 	return &UserInfoHandler{repo: repo}
 }
 
+// Create создает новую запись пользовательской информации
+// @Summary      Создать пользовательскую информацию
+// @Description  Создает новую запись с информацией о пользователе (вес, рост, возраст)
+// @Tags         user-info
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.CreateUserInfoRequest true "Данные пользователя"
+// @Success      200  {object}  dto.UserInfoResponse
+// @Failure      400  {object}  dto.ErrorResponse
+// @Failure      500  {object}  dto.ErrorResponse
+// @Router       /api/v1/user-info [post]
 func (h *UserInfoHandler) Create(c *gin.Context) {
 	var req dto.CreateUserInfoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,6 +68,16 @@ func (h *UserInfoHandler) Create(c *gin.Context) {
 	})
 }
 
+// GetLatest получает последнюю запись пользовательской информации
+// @Summary      Получить последнюю запись
+// @Description  Возвращает последнюю запись информации о пользователе
+// @Tags         user-info
+// @Produce      json
+// @Param        user_id query string true "User ID"
+// @Success      200  {object}  dto.UserInfoResponse
+// @Failure      400  {object}  dto.ErrorResponse
+// @Failure      404  {object}  dto.ErrorResponse
+// @Router       /api/v1/user-info/latest [get]
 func (h *UserInfoHandler) GetLatest(c *gin.Context) {
 	uidStr := c.Query("user_id")
 	uid, err := uuid.Parse(uidStr)
@@ -77,6 +98,16 @@ func (h *UserInfoHandler) GetLatest(c *gin.Context) {
 	})
 }
 
+// List получает все записи пользовательской информации
+// @Summary      Получить все записи
+// @Description  Возвращает все записи информации о пользователе
+// @Tags         user-info
+// @Produce      json
+// @Param        user_id query string true "User ID"
+// @Success      200  {array}   dto.UserInfoResponse
+// @Failure      400  {object}  dto.ErrorResponse
+// @Failure      404  {object}  dto.ErrorResponse
+// @Router       /api/v1/user-info [get]
 func (h *UserInfoHandler) List(c *gin.Context) {
 	uidStr := c.Query("user_id")
 	uid, err := uuid.Parse(uidStr)
