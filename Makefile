@@ -1,17 +1,28 @@
+# Generating code
+gen:
+	@echo "Generating code..."
+	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+	@go install github.com/swaggo/swag/cmd/swag@latest
+	@cd config && sqlc generate
+	@echo "Code generated successfully"
+
 # Install dependencies
-deps:
+deps: gen
 	@echo "Installing dependencies..."
 	@go generate ./...
+	@rm -rf docs/
+	@swag init -g internal/adapter/in/http/handler.go --output docs/ --parseDependency --parseInternal
 	@go mod download
 	@go mod tidy
 
 # Build the application
 ARTIFACT_VERSION ?= 0.0.0-local
-build: deps
-	@echo "Building..."
+build: gen deps
+	@echo "Building version $(ARTIFACT_VERSION)..."
 	@go build \
-	-o ./bin/end-user-info \
-	./cmd/end-user-info
+		-ldflags="-X main.version=$(ARTIFACT_VERSION)" \
+		-o ./bin/end-user-info \
+		./cmd/end-user-info
 
 # Run the application
 run: build
@@ -29,20 +40,28 @@ test:
 	@echo "Testing..."
 	@go test ./... -v
 
+# Build docker image (optional)
+build-image:
+	@echo "Building docker image version $(ARTIFACT_VERSION)..."
+	@docker build \
+		--build-arg ARTIFACT_VERSION=$(ARTIFACT_VERSION) \
+		-t end-user-info:$(ARTIFACT_VERSION) .
+
 # Clean the binary
 clean:
 	@echo "Cleaning..."
-	@rm -f bin
+	@rm -rf bin/
 
- help:
+# Help
+help:
 	@echo "Available commands:"
-	@echo "  deps    		- Install dependencies"
-	@echo "  build   		- Build the application"
-	@echo "  build-image		- Build the docker image"
-	@echo "  run     		- Run the application"
-	@echo "  lint    		- Lint the application"
-	@echo "  test    		- Test the application"
-	@echo "  clean   		- Clean the binary"
+	@echo "  deps          - Install dependencies"
+	@echo "  build         - Build the application"
+	@echo "  build-image   - Build the docker image (optional)"
+	@echo "  run           - Run the application"
+	@echo "  lint          - Lint the application"
+	@echo "  test          - Test the application"
+	@echo "  clean         - Clean the binary"
 
 .DEFAULT_GOAL := help
-.PHONY: help build build-image run lint test clean
+.PHONY: help build build-image run lint test clean deps gen

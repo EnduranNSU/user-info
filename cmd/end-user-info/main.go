@@ -8,8 +8,8 @@ import (
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres"
 	"github.com/EnduranNSU/end-user-info/internal/app"
-	appconfig "github.com/EnduranNSU/end-user-info/internal/config"
 	"github.com/EnduranNSU/end-user-info/internal/logging"
+	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/num30/config"
@@ -34,8 +34,8 @@ func init() {
 
 func main() {
 	// Load config
-	var cfg appconfig.Config
-	configName := appconfig.GetConfigName()
+	var cfg app.Config
+	configName := app.GetConfigName()
 
 	err := config.NewConfReader(configName).WithPrefix("APP").Read(&cfg)
 	if err != nil {
@@ -45,32 +45,35 @@ func main() {
 	// Setup logger
 	logging.SetupLogger(toLoggerConfig(cfg.Logger))
 
-	//Open db
-	db, err := sql.Open("postgres", 
-	fmt.Sprintf(
-		"user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
-		cfg.Db.User, cfg.Db.Password, cfg.Db.Dbname, cfg.Db.Host, cfg.Db.Port))
-    if err != nil {
-        log.Fatal().Stack().Err(err).Msgf("Failed to connect to database: %v", err)
-    }
-    defer db.Close()
+	// Open db
+	db, err := sql.Open("postgres",
+		fmt.Sprintf(
+			"user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
+			cfg.Db.User, cfg.Db.Password, cfg.Db.Dbname, cfg.Db.Host, cfg.Db.Port))
+	if err != nil {
+		log.Fatal().Stack().Err(err).Msgf("Failed to connect to database: %v", err)
+	}
+	defer db.Close()
 
 	// Checking connection
-    ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-    defer cancel()
-    if err := db.PingContext(ctx); err != nil {
-        log.Fatal().Stack().Err(err).Msgf("Failed to ping database: %v", err)
-    }
-
-	//init repo
-	repo, err := postgres.NewUserInfoRepository(db)
-	if err != nil {
-		return
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := db.PingContext(ctx); err != nil {
+		log.Fatal().Stack().Err(err).Msgf("Failed to ping database: %v", err)
 	}
-	_ = app.SetupServer(&repo)
+
+	// Init repo - теперь без возврата ошибки
+	repo := postgres.NewUserInfoRepository(db)
+	svc := svcuserinfo.New(repo)
+
+	srv := app.SetupServer(svc, cfg.Http.Addr)
+
+	if err := srv.StartServer(); err != nil {
+		log.Fatal().Err(err).Msg("http server stopped")
+	}
 }
 
-func toLoggerConfig(cfg appconfig.LoggerConfig) logging.Config {
+func toLoggerConfig(cfg app.LoggerConfig) logging.Config {
 	return logging.Config{
 		Level: cfg.Level,
 		Console: logging.ConsoleLoggerConfig{

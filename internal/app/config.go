@@ -1,5 +1,4 @@
-package config;
-
+package app
 
 import (
 	"strings"
@@ -20,16 +19,21 @@ func GetConfigName() string {
 }
 
 type Config struct {
-	Db     DbConfig   
+	Db     DbConfig
 	Logger LoggerConfig
+	Http   HttpConfig
+}
+
+type HttpConfig struct {
+	Addr string `default:":8080"`
 }
 
 type DbConfig struct {
-	User string
+	User     string
 	Password string
-	Dbname string
-	Host string
-	Port int32
+	Dbname   string
+	Host     string
+	Port     int32
 }
 
 type LogEncoding string
