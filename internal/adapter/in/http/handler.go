@@ -2,21 +2,20 @@ package httpin
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/in/http/dto"
-	"github.com/EnduranNSU/end-user-info/internal/domain"
+	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
 )
 
 type UserInfoHandler struct {
-	repo domain.UserInfoRepository
-} // СНЕСТИ. надо инжектить в адаптер
+	svc svcuserinfo.Service
+}
 
-func NewUserInfoHandler(repo domain.UserInfoRepository) *UserInfoHandler {
-	return &UserInfoHandler{repo: repo}
+func NewUserInfoHandler(svc svcuserinfo.Service) *UserInfoHandler {
+	return &UserInfoHandler{svc: svc}
 }
 
 // Create создает новую запись пользовательской информации
@@ -36,26 +35,23 @@ func (h *UserInfoHandler) Create(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{Error: "bad json"})
 		return
 	}
-	if req.UserID == "" || req.Weight <= 0 || req.Height <= 0 || req.Age <= 0 {
-		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{Error: "missing or invalid fields"})
-		return
-	}
+
 	uid, err := uuid.Parse(req.UserID)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{Error: "invalid user_id"})
 		return
 	}
 
-	now := time.Now().UTC()
-
-	m := &domain.UserInfo{
+	cmd := svcuserinfo.CreateUserInfoCmd{
 		UserID: uid,
 		Weight: req.Weight,
 		Height: req.Height,
 		Age:    req.Age,
-		Date:   now,
+		Date:   req.Date,
 	}
-	if err := h.repo.CreateUserInfo(c.Request.Context(), m); err != nil {
+
+	m, err := h.svc.Create(c.Request.Context(), cmd)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, dto.ErrorResponse{Error: "failed to create"})
 		return
 	}
@@ -85,7 +81,7 @@ func (h *UserInfoHandler) GetLatest(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{Error: "invalid user_id"})
 		return
 	}
-	m, err := h.repo.GetLatestUserInfoByUserID(c.Request.Context(), uid)
+	m, err := h.svc.GetLatest(c.Request.Context(), uid)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, dto.ErrorResponse{Error: "not found"})
 		return
@@ -115,7 +111,7 @@ func (h *UserInfoHandler) List(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, dto.ErrorResponse{Error: "invalid user_id"})
 		return
 	}
-	items, err := h.repo.GetAllUserInfoByUserID(c.Request.Context(), uid)
+	items, err := h.svc.List(c.Request.Context(), uid)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, dto.ErrorResponse{Error: "not found"})
 		return

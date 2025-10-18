@@ -8,8 +8,8 @@ import (
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres"
 	"github.com/EnduranNSU/end-user-info/internal/app"
-	appconfig "github.com/EnduranNSU/end-user-info/internal/config"
 	"github.com/EnduranNSU/end-user-info/internal/logging"
+	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
 	_ "github.com/joho/godotenv/autoload"
 	_ "github.com/lib/pq"
 	"github.com/num30/config"
@@ -34,8 +34,8 @@ func init() {
 
 func main() {
 	// Load config
-	var cfg appconfig.Config
-	configName := appconfig.GetConfigName()
+	var cfg app.Config
+	configName := app.GetConfigName()
 
 	err := config.NewConfReader(configName).WithPrefix("APP").Read(&cfg)
 	if err != nil {
@@ -64,14 +64,16 @@ func main() {
 
 	// Init repo - теперь без возврата ошибки
 	repo := postgres.NewUserInfoRepository(db)
+	svc := svcuserinfo.New(repo)
 
-	srv := app.SetupServer(repo, cfg.Http.Addr)
+	srv := app.SetupServer(svc, cfg.Http.Addr)
+
 	if err := srv.StartServer(); err != nil {
 		log.Fatal().Err(err).Msg("http server stopped")
 	}
 }
 
-func toLoggerConfig(cfg appconfig.LoggerConfig) logging.Config {
+func toLoggerConfig(cfg app.LoggerConfig) logging.Config {
 	return logging.Config{
 		Level: cfg.Level,
 		Console: logging.ConsoleLoggerConfig{
