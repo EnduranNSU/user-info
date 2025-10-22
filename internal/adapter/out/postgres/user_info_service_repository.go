@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen"
 	"github.com/EnduranNSU/end-user-info/internal/domain"
+	"github.com/EnduranNSU/end-user-info/internal/logging"
 )
 
 type UserInfoRepositoryImpl struct {
@@ -17,7 +17,6 @@ type UserInfoRepositoryImpl struct {
 	queries *gen.Queries
 }
 
-// NewUserInfoRepository теперь возвращает только репозиторий без ошибки
 func NewUserInfoRepository(db *sql.DB) domain.UserInfoRepository {
 	return &UserInfoRepositoryImpl{
 		db:      db,
@@ -25,7 +24,6 @@ func NewUserInfoRepository(db *sql.DB) domain.UserInfoRepository {
 	}
 }
 
-// Остальные методы остаются без изменений...
 func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *domain.UserInfo) error {
 	params := gen.CreateUserInfoParams{
 		Weight: info.Weight,
@@ -37,24 +35,13 @@ func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *domai
 
 	err := r.queries.CreateUserInfo(ctx, params)
 	if err != nil {
-		log.Error().
-			Err(err).
-			Str("operation", "CreateUserInfo").
-			Float64("weight", info.Weight).
-			Int64("height", info.Height).
-			Int64("age", info.Age).
-			Str("user_id", info.UserID.String()).
-			Msg("failed to create user info")
+		jsonData := logging.MarshalLogData(info)
+		logging.Error(err, "CreateUserInfo", jsonData, "failed to create user info")
 		return err
 	}
 
-	log.Debug().
-		Str("operation", "CreateUserInfo").
-		Float64("weight", info.Weight).
-		Int64("height", info.Height).
-		Int64("age", info.Age).
-		Str("user_id", info.UserID.String()).
-		Msg("successfully created user info")
+	jsonData := logging.MarshalLogData(info)
+	logging.Debug("CreateUserInfo", jsonData, "successfully created user info")
 
 	return nil
 }
@@ -62,19 +49,18 @@ func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *domai
 func (r *UserInfoRepositoryImpl) GetLatestUserInfoByUserID(ctx context.Context, userID uuid.UUID) (*domain.UserInfo, error) {
 	info, err := r.queries.GetLatestUserInfoByUserID(ctx, userID)
 	if err == sql.ErrNoRows {
-		log.Warn().
-			Str("operation", "GetLatestUserInfoByUserID").
-			Str("user_id", userID.String()).
-			Msg("user info not found")
+		jsonData := logging.MarshalLogData(map[string]interface{}{
+			"user_id": userID.String(),
+		})
+		logging.Warn("GetLatestUserInfoByUserID", jsonData, "user info not found")
 		return nil, fmt.Errorf("user_info not found for user_id: %s", userID)
 	}
 
 	if err != nil {
-		log.Error().
-			Err(err).
-			Str("operation", "GetLatestUserInfoByUserID").
-			Str("user_id", userID.String()).
-			Msg("failed to get latest user info")
+		jsonData := logging.MarshalLogData(map[string]interface{}{
+			"user_id": userID.String(),
+		})
+		logging.Error(err, "GetLatestUserInfoByUserID", jsonData, "failed to get latest user info")
 		return nil, err
 	}
 
@@ -87,12 +73,12 @@ func (r *UserInfoRepositoryImpl) GetLatestUserInfoByUserID(ctx context.Context, 
 		UserID: info.UserID,
 	}
 
-	log.Debug().
-		Str("operation", "GetLatestUserInfoByUserID").
-		Str("user_id", userID.String()).
-		Int64("info_id", info.ID).
-		Time("date", info.Date).
-		Msg("successfully retrieved latest user info")
+	jsonData := logging.MarshalLogData(map[string]interface{}{
+		"user_id": userID.String(),
+		"info_id": info.ID,
+		"date":    info.Date,
+	})
+	logging.Debug("GetLatestUserInfoByUserID", jsonData, "successfully retrieved latest user info")
 
 	return domainInfo, nil
 }
@@ -100,19 +86,18 @@ func (r *UserInfoRepositoryImpl) GetLatestUserInfoByUserID(ctx context.Context, 
 func (r *UserInfoRepositoryImpl) GetAllUserInfoByUserID(ctx context.Context, userID uuid.UUID) ([]*domain.UserInfo, error) {
 	infos, err := r.queries.GetAllUserInfoByUserID(ctx, userID)
 	if err != nil {
-		log.Error().
-			Err(err).
-			Str("operation", "GetAllUserInfoByUserID").
-			Str("user_id", userID.String()).
-			Msg("failed to query user info")
+		jsonData := logging.MarshalLogData(map[string]interface{}{
+			"user_id": userID.String(),
+		})
+		logging.Error(err, "GetAllUserInfoByUserID", jsonData, "failed to query user info")
 		return nil, err
 	}
 
 	if len(infos) == 0 {
-		log.Warn().
-			Str("operation", "GetAllUserInfoByUserID").
-			Str("user_id", userID.String()).
-			Msg("no user info records found")
+		jsonData := logging.MarshalLogData(map[string]interface{}{
+			"user_id": userID.String(),
+		})
+		logging.Warn("GetAllUserInfoByUserID", jsonData, "no user info records found")
 		return nil, fmt.Errorf("no user_info records found for user_id: %s", userID)
 	}
 
@@ -128,11 +113,11 @@ func (r *UserInfoRepositoryImpl) GetAllUserInfoByUserID(ctx context.Context, use
 		}
 	}
 
-	log.Debug().
-		Str("operation", "GetAllUserInfoByUserID").
-		Str("user_id", userID.String()).
-		Int("records_count", len(domainInfos)).
-		Msg("successfully retrieved user info records")
+	jsonData := logging.MarshalLogData(map[string]interface{}{
+		"user_id":       userID.String(),
+		"records_count": len(domainInfos),
+	})
+	logging.Debug("GetAllUserInfoByUserID", jsonData, "successfully retrieved user info records")
 
 	return domainInfos, nil
 }

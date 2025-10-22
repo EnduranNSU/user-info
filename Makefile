@@ -2,7 +2,8 @@
 gen:
 	@echo "Generating code..."
 	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-	@go install github.com/swaggo/swag/cmd/swag@latest
+	@rm -rf docs/
+	@go run github.com/swaggo/swag/cmd/swag@latest init -g internal/adapter/in/http/handler.go --output docs/ --parseDependency --parseInternal
 	@cd config && sqlc generate
 	@echo "Code generated successfully"
 
@@ -10,8 +11,6 @@ gen:
 deps: gen
 	@echo "Installing dependencies..."
 	@go generate ./...
-	@rm -rf docs/
-	@swag init -g internal/adapter/in/http/handler.go --output docs/ --parseDependency --parseInternal
 	@go mod download
 	@go mod tidy
 

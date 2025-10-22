@@ -47,14 +47,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y postgresql-client
 
-    - name: Install sqlc
-      run: |
-        go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
-
-    - name: Install swag
-      run: |
-        go install github.com/swaggo/swag/cmd/swag@latest
-
     - name: Generate code and install deps
       run: |
         make deps
