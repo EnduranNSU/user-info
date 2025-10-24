@@ -1,0 +1,207 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/user-info": {
+            "get": {
+                "description": "Возвращает все записи информации о пользователе",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-info"
+                ],
+                "summary": "Получить все записи",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Создает новую запись с информацией о пользователе (вес, рост, возраст)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-info"
+                ],
+                "summary": "Создать пользовательскую информацию",
+                "parameters": [
+                    {
+                        "description": "Данные пользователя",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-info/latest": {
+            "get": {
+                "description": "Возвращает последнюю запись информации о пользователе",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user-info"
+                ],
+                "summary": "Получить последнюю запись",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest": {
+            "type": "object",
+            "required": [
+                "age",
+                "height",
+                "user_id",
+                "weight"
+            ],
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "maximum": 150,
+                    "minimum": 1,
+                    "example": 25
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2023-10-05"
+                },
+                "height": {
+                    "type": "integer",
+                    "maximum": 300,
+                    "minimum": 1,
+                    "example": 175
+                },
+                "user_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                },
+                "weight": {
+                    "type": "number",
+                    "maximum": 300,
+                    "minimum": 1,
+                    "example": 70.5
+                }
+            }
+        },
+        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "error message"
+                }
+            }
+        },
+        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 25
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2023-10-05"
+                },
+                "height": {
+                    "type": "integer",
+                    "example": 175
+                },
+                "weight": {
+                    "type": "number",
+                    "example": 70.5
+                }
+            }
+        }
+    }
+}
