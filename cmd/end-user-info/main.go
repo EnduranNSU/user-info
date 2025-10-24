@@ -67,7 +67,7 @@ func main() {
 	svc := svcuserinfo.New(repo)
 
 	srv := app.SetupServer(svc, cfg.Http.Addr)
-
+	
 	if err := srv.StartServer(); err != nil {
 		log.Fatal().Err(err).Msg("http server stopped")
 	}
