@@ -1,0 +1,141 @@
+definitions:
+  github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest:
+    properties:
+      age:
+        example: 25
+        maximum: 150
+        minimum: 1
+        type: integer
+      date:
+        example: "2023-10-05"
+        type: string
+      height:
+        example: 175
+        maximum: 300
+        minimum: 1
+        type: integer
+      user_id:
+        example: 550e8400-e29b-41d4-a716-446655440000
+        format: uuid
+        type: string
+      weight:
+        example: 70.5
+        maximum: 300
+        minimum: 1
+        type: number
+    required:
+    - age
+    - height
+    - user_id
+    - weight
+    type: object
+  github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse:
+    properties:
+      age:
+        example: 25
+        type: integer
+      date:
+        example: "2023-10-05"
+        type: string
+      height:
+        example: 175
+        type: integer
+      weight:
+        example: 70.5
+        type: number
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/user-info:
+    get:
+      description: Возвращает все записи информации о пользователе
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+      summary: Получить все записи
+      tags:
+      - user-info
+    post:
+      consumes:
+      - application/json
+      description: Создает новую запись с информацией о пользователе (вес, рост, возраст)
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+      summary: Создать пользовательскую информацию
+      tags:
+      - user-info
+  /api/v1/user-info/latest:
+    get:
+      description: Возвращает последнюю запись информации о пользователе
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse'
+      summary: Получить последнюю запись
+      tags:
+      - user-info
+swagger: "2.0"
