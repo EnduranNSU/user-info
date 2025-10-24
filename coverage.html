@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>end-user-info: Go Coverage Report</title>
+		<title>http: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,35 +55,31 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/EnduranNSU/end-user-info/cmd/end-user-info/main.go (0.0%)</option>
+				<option value="file0">github.com/EnduranNSU/end-user-info/internal/adapter/in/http/handler.go (89.5%)</option>
 				
-				<option value="file1">github.com/EnduranNSU/end-user-info/docs/docs.go (0.0%)</option>
+				<option value="file1">github.com/EnduranNSU/end-user-info/internal/adapter/in/http/router.go (0.0%)</option>
 				
-				<option value="file2">github.com/EnduranNSU/end-user-info/internal/adapter/in/http/handler.go (89.5%)</option>
+				<option value="file2">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen/db.go (0.0%)</option>
 				
-				<option value="file3">github.com/EnduranNSU/end-user-info/internal/adapter/in/http/router.go (0.0%)</option>
+				<option value="file3">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen/query.sql.go (0.0%)</option>
 				
-				<option value="file4">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen/db.go (0.0%)</option>
+				<option value="file4">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/user_info_service_repository.go (0.0%)</option>
 				
-				<option value="file5">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen/query.sql.go (0.0%)</option>
+				<option value="file5">github.com/EnduranNSU/end-user-info/internal/app/config.go (0.0%)</option>
 				
-				<option value="file6">github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/user_info_service_repository.go (0.0%)</option>
+				<option value="file6">github.com/EnduranNSU/end-user-info/internal/app/server.go (0.0%)</option>
 				
-				<option value="file7">github.com/EnduranNSU/end-user-info/internal/app/config.go (0.0%)</option>
+				<option value="file7">github.com/EnduranNSU/end-user-info/internal/logging/log.go (0.0%)</option>
 				
-				<option value="file8">github.com/EnduranNSU/end-user-info/internal/app/server.go (0.0%)</option>
+				<option value="file8">github.com/EnduranNSU/end-user-info/internal/logging/logger.go (0.0%)</option>
 				
-				<option value="file9">github.com/EnduranNSU/end-user-info/internal/logging/log.go (0.0%)</option>
+				<option value="file9">github.com/EnduranNSU/end-user-info/internal/mocks/Service.go (0.0%)</option>
 				
-				<option value="file10">github.com/EnduranNSU/end-user-info/internal/logging/logger.go (0.0%)</option>
+				<option value="file10">github.com/EnduranNSU/end-user-info/internal/mocks/UserInfoRepository.go (0.0%)</option>
 				
-				<option value="file11">github.com/EnduranNSU/end-user-info/internal/mocks/Service.go (0.0%)</option>
+				<option value="file11">github.com/EnduranNSU/end-user-info/internal/service/service.go (93.3%)</option>
 				
-				<option value="file12">github.com/EnduranNSU/end-user-info/internal/mocks/UserInfoRepository.go (0.0%)</option>
-				
-				<option value="file13">github.com/EnduranNSU/end-user-info/internal/service/service.go (93.3%)</option>
-				
-				<option value="file14">github.com/EnduranNSU/end-user-info/internal/util/env/env.go (0.0%)</option>
+				<option value="file12">github.com/EnduranNSU/end-user-info/internal/util/env/env.go (0.0%)</option>
 				
 				</select>
 			</div>
@@ -106,337 +102,7 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package main
-
-import (
-        "context"
-        "database/sql"
-        "fmt"
-        "time"
-
-        "github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres"
-        "github.com/EnduranNSU/end-user-info/internal/app"
-        "github.com/EnduranNSU/end-user-info/internal/logging"
-        svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
-        _ "github.com/joho/godotenv/autoload"
-        _ "github.com/lib/pq"
-        "github.com/num30/config"
-        "github.com/rs/zerolog/log"
-)
-
-func init() <span class="cov0" title="0">{
-        // Setup default logger
-        logging.SetupLogger(
-                logging.Config{
-                        Level: "info",
-                        Console: logging.ConsoleLoggerConfig{
-                                Enable:   true,
-                                Encoding: "text",
-                        },
-                        File: logging.FileLoggerConfig{
-                                Enable: false,
-                        },
-                },
-        )
-}</span>
-
-func main() <span class="cov0" title="0">{
-        // Load config
-        var cfg app.Config
-        configName := app.GetConfigName()
-
-        err := config.NewConfReader(configName).WithPrefix("APP").Read(&amp;cfg)
-        if err != nil </span><span class="cov0" title="0">{
-                log.Fatal().Stack().Err(err).Msg("failed to load config")
-        }</span>
-
-        // Setup logger
-        <span class="cov0" title="0">logging.SetupLogger(toLoggerConfig(cfg.Logger))
-
-        // Open db
-        db, err := sql.Open("postgres",
-                fmt.Sprintf(
-                        "user=%s password=%s dbname=%s sslmode=disable host=%s port=%d",
-                        cfg.Db.User, cfg.Db.Password, cfg.Db.Dbname, cfg.Db.Host, cfg.Db.Port))
-        if err != nil </span><span class="cov0" title="0">{
-                log.Fatal().Stack().Err(err).Msgf("Failed to connect to database: %v", err)
-        }</span>
-        <span class="cov0" title="0">defer db.Close()
-
-        // Checking connection
-        ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-        defer cancel()
-        if err := db.PingContext(ctx); err != nil </span><span class="cov0" title="0">{
-                log.Fatal().Stack().Err(err).Msgf("Failed to ping database: %v", err)
-        }</span>
-
-        // Init repo - теперь без возврата ошибки
-        <span class="cov0" title="0">repo := postgres.NewUserInfoRepository(db)
-        svc := svcuserinfo.New(repo)
-
-        srv := app.SetupServer(svc, cfg.Http.Addr)
-
-        if err := srv.StartServer(); err != nil </span><span class="cov0" title="0">{
-                log.Fatal().Err(err).Msg("http server stopped")
-        }</span>
-}
-
-func toLoggerConfig(cfg app.LoggerConfig) logging.Config <span class="cov0" title="0">{
-        return logging.Config{
-                Level: cfg.Level,
-                Console: logging.ConsoleLoggerConfig{
-                        Enable:   cfg.Console.Enable,
-                        Encoding: cfg.Console.Encoding,
-                },
-                File: logging.FileLoggerConfig{
-                        Enable:  cfg.File.Enable,
-                        DirPath: cfg.File.DirPath,
-                        MaxSize: cfg.File.MaxSize,
-                        MaxAge:  cfg.File.MaxAge,
-                },
-        }
-}</span>
-</pre>
-		
-		<pre class="file" id="file1" style="display: none">// Package docs Code generated by swaggo/swag. DO NOT EDIT
-package docs
-
-import "github.com/swaggo/swag"
-
-const docTemplate = `{
-    "schemes": {{ marshal .Schemes }},
-    "swagger": "2.0",
-    "info": {
-        "description": "{{escape .Description}}",
-        "title": "{{.Title}}",
-        "contact": {},
-        "version": "{{.Version}}"
-    },
-    "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
-    "paths": {
-        "/api/v1/user-info": {
-            "get": {
-                "description": "Возвращает все записи информации о пользователе",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-info"
-                ],
-                "summary": "Получить все записи",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Создает новую запись с информацией о пользователе (вес, рост, возраст)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-info"
-                ],
-                "summary": "Создать пользовательскую информацию",
-                "parameters": [
-                    {
-                        "description": "Данные пользователя",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/user-info/latest": {
-            "get": {
-                "description": "Возвращает последнюю запись информации о пользователе",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user-info"
-                ],
-                "summary": "Получить последнюю запись",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest": {
-            "type": "object",
-            "required": [
-                "age",
-                "height",
-                "user_id",
-                "weight"
-            ],
-            "properties": {
-                "age": {
-                    "type": "integer",
-                    "maximum": 150,
-                    "minimum": 1,
-                    "example": 25
-                },
-                "date": {
-                    "type": "string",
-                    "example": "2023-10-05"
-                },
-                "height": {
-                    "type": "integer",
-                    "maximum": 300,
-                    "minimum": 1,
-                    "example": 175
-                },
-                "user_id": {
-                    "type": "string",
-                    "format": "uuid",
-                    "example": "550e8400-e29b-41d4-a716-446655440000"
-                },
-                "weight": {
-                    "type": "number",
-                    "maximum": 300,
-                    "minimum": 1,
-                    "example": 70.5
-                }
-            }
-        },
-        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string",
-                    "example": "error message"
-                }
-            }
-        },
-        "github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.UserInfoResponse": {
-            "type": "object",
-            "properties": {
-                "age": {
-                    "type": "integer",
-                    "example": 25
-                },
-                "date": {
-                    "type": "string",
-                    "example": "2023-10-05"
-                },
-                "height": {
-                    "type": "integer",
-                    "example": 175
-                },
-                "weight": {
-                    "type": "number",
-                    "example": 70.5
-                }
-            }
-        }
-    }
-}`
-
-// SwaggerInfo holds exported Swagger Info so clients can modify it
-var SwaggerInfo = &amp;swag.Spec{
-        Version:          "",
-        Host:             "",
-        BasePath:         "",
-        Schemes:          []string{},
-        Title:            "",
-        Description:      "",
-        InfoInstanceName: "swagger",
-        SwaggerTemplate:  docTemplate,
-        LeftDelim:        "{{",
-        RightDelim:       "}}",
-}
-
-func init() <span class="cov0" title="0">{
-        swag.Register(SwaggerInfo.InstanceName(), SwaggerInfo)
-}</span>
-</pre>
-		
-		<pre class="file" id="file2" style="display: none">package httpin
+		<pre class="file" id="file0" style="display: none">package httpin
 
 import (
         "net/http"
@@ -567,7 +233,7 @@ func (h *UserInfoHandler) List(c *gin.Context) <span class="cov5" title="3">{
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package httpin
+		<pre class="file" id="file1" style="display: none">package httpin
 
 import (
         "github.com/gin-gonic/gin"
@@ -596,7 +262,7 @@ func NewGinRouter(h *UserInfoHandler) *gin.Engine <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">// Code generated by sqlc. DO NOT EDIT.
+		<pre class="file" id="file2" style="display: none">// Code generated by sqlc. DO NOT EDIT.
 // versions:
 //   sqlc v1.30.0
 
@@ -629,7 +295,7 @@ func (q *Queries) WithTx(tx *sql.Tx) *Queries <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">// Code generated by sqlc. DO NOT EDIT.
+		<pre class="file" id="file3" style="display: none">// Code generated by sqlc. DO NOT EDIT.
 // versions:
 //   sqlc v1.30.0
 // source: query.sql
@@ -727,7 +393,7 @@ func (q *Queries) GetLatestUserInfoByUserID(ctx context.Context, userID uuid.UUI
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package postgres
+		<pre class="file" id="file4" style="display: none">package postgres
 
 import (
         "context"
@@ -851,7 +517,7 @@ func (r *UserInfoRepositoryImpl) GetAllUserInfoByUserID(ctx context.Context, use
         return domainInfos, nil</span>
 }</pre>
 		
-		<pre class="file" id="file7" style="display: none">package app
+		<pre class="file" id="file5" style="display: none">package app
 
 import (
         "strings"
@@ -924,7 +590,7 @@ type FileLoggerConfig struct {
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package app
+		<pre class="file" id="file6" style="display: none">package app
 
 import (
         "net/http"
@@ -956,7 +622,7 @@ func (s *Server) StartServer() error <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package logging
+		<pre class="file" id="file7" style="display: none">package logging
 
 import (
         "encoding/json"
@@ -1007,7 +673,7 @@ func Warn(operation string, jsonData []byte, message string) <span class="cov0" 
                 Msg(message)
 }</pre>
 		
-		<pre class="file" id="file10" style="display: none">package logging
+		<pre class="file" id="file8" style="display: none">package logging
 
 import (
         "io"
@@ -1142,7 +808,7 @@ func (h gidHook) Run(e *zerolog.Event, _ zerolog.Level, _ string) <span class="c
 }</span>
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">// Code generated by mockery v2.53.5. DO NOT EDIT.
+		<pre class="file" id="file9" style="display: none">// Code generated by mockery v2.53.5. DO NOT EDIT.
 
 package mocks
 
@@ -1265,7 +931,7 @@ func NewService(t interface {
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">// Code generated by mockery v2.53.5. DO NOT EDIT.
+		<pre class="file" id="file10" style="display: none">// Code generated by mockery v2.53.5. DO NOT EDIT.
 
 package mocks
 
@@ -1376,7 +1042,7 @@ func NewUserInfoRepository(t interface {
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package service
+		<pre class="file" id="file11" style="display: none">package service
 
 import (
         "context"
@@ -1435,7 +1101,7 @@ func (s *service) List(ctx context.Context, userID uuid.UUID) ([]*domain.UserInf
 }</span>
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package env
+		<pre class="file" id="file12" style="display: none">package env
 
 import "os"
 

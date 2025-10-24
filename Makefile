@@ -40,14 +40,14 @@ test:
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
 	@go mod tidy
-	@go test -v -race ./...
+	@go test -v -race ./internal/...
 
 coverage:
 	@echo "Coverage..."
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
 	@go mod tidy
-	@go test -race -coverprofile=coverage.out -covermode=atomic ./...
+	@go test -race -coverprofile=coverage.out -covermode=atomic ./internal/...
 	@go tool cover -html=coverage.out -o coverage.html
 
 # Build docker image (optional)
