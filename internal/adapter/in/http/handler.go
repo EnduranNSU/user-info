@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/in/http/dto"
-	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
+	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/domain"
 )
 
 type UserInfoHandler struct {

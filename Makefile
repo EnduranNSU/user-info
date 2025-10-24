@@ -37,7 +37,18 @@ lint:
 # Test the application
 test:
 	@echo "Testing..."
-	@go test ./... -v
+	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
+	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
+	@go mod tidy
+	@go test -v -race ./...
+
+coverage:
+	@echo "Coverage..."
+	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
+	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
+	@go mod tidy
+	@go test -race -coverprofile=coverage.out -covermode=atomic ./...
+	@go tool cover -html=coverage.out -o coverage.html
 
 # Build docker image (optional)
 build-image:

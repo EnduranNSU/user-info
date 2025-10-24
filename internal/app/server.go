@@ -5,7 +5,7 @@ import (
 	"time"
 
 	httpin "github.com/EnduranNSU/end-user-info/internal/adapter/in/http"
-	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/service"
+	svcuserinfo "github.com/EnduranNSU/end-user-info/internal/domain"
 )
 
 type Server struct {

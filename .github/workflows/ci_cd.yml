@@ -85,6 +85,20 @@ jobs:
       with:
         sarif_file: 'trivy-results.sarif'
 
+    - name: Run tests with coverage
+      run: |
+        make test
+        make coverage
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: |
+          coverage.out
+          coverage.html
+        retention-days: 14
+
   build-image:
     needs: test-and-analyze
     runs-on: ubuntu-latest

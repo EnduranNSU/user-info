@@ -12,21 +12,7 @@ import (
 
 var ErrInvalidDate = errors.New("invalid date format, want YYYY-MM-DD")
 
-type CreateUserInfoCmd struct {
-	UserID uuid.UUID
-	Weight float64
-	Height int64
-	Age    int64
-	Date   string
-}
-
-type Service interface {
-	Create(ctx context.Context, cmd CreateUserInfoCmd) (*domain.UserInfo, error)
-	GetLatest(ctx context.Context, userID uuid.UUID) (*domain.UserInfo, error)
-	List(ctx context.Context, userID uuid.UUID) ([]*domain.UserInfo, error)
-}
-
-func New(repo domain.UserInfoRepository) Service {
+func New(repo domain.UserInfoRepository) domain.Service {
 	return &service{repo: repo}
 }
 
@@ -34,7 +20,7 @@ type service struct {
 	repo domain.UserInfoRepository
 }
 
-func (s *service) Create(ctx context.Context, cmd CreateUserInfoCmd) (*domain.UserInfo, error) {
+func (s *service) Create(ctx context.Context, cmd domain.CreateUserInfoCmd) (*domain.UserInfo, error) {
 	var dt time.Time
 	dateStr := strings.TrimSpace(cmd.Date)
 

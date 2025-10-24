@@ -76,3 +76,4 @@ config/kubeconfig
 config/kubeconfig-inline
 bin
 **/gen
+**/mocks
