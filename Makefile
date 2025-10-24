@@ -8,7 +8,7 @@ gen:
 	@echo "Code generated successfully"
 
 # Install dependencies
-deps: gen
+deps: gen mocks
 	@echo "Installing dependencies..."
 	@go generate ./...
 	@go mod download
@@ -34,19 +34,18 @@ lint:
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	@golangci-lint run --tests=false --disable-all --timeout=2m -p error
 
-# Test the application
-test:
-	@echo "Testing..."
+mocks:
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
 	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
 	@go mod tidy
+
+# Test the application
+test: mocks
+	@echo "Testing..."
 	@go test -v -race ./internal/...
 
-coverage:
+coverage: mocks
 	@echo "Coverage..."
-	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=UserInfoRepository --output=internal/mocks
-	@go run github.com/vektra/mockery/v2@latest --dir=internal/domain --name=Service --output=internal/mocks
-	@go mod tidy
 	@go test -race -coverprofile=coverage.out -covermode=atomic ./internal/...
 	@go tool cover -html=coverage.out -o coverage.html
 

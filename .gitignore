@@ -39,6 +39,8 @@ fabric.properties
 *.so
 *.dylib
 *.test
+*.out
+coverage.html
 go.work
 Thumbs.db
 Thumbs.db:encryptable
