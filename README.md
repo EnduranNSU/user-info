@@ -19,3 +19,6 @@ make build && make run
 ```bash
 docker compose up
 ```
+
+## Документация API
+При запуске сервиса по пути /swagger/index.html или в папке docs
