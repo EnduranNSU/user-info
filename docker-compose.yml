@@ -1,12 +1,11 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: postgres_db
-    environment:
-      POSTGRES_DB: myapp
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+  user-info:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config/config.yaml:/app/config/config.yaml
     ports:
-      - "5432:5432" 
+      - "8081:8080"
