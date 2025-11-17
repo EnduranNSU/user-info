@@ -3,7 +3,11 @@ gen:
 	@echo "Generating code..."
 	@go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
 	@rm -rf docs/
-	@go run github.com/swaggo/swag/cmd/swag@latest init -g internal/adapter/in/http/handler.go --output docs/ --parseDependency --parseInternal
+	@go run github.com/swaggo/swag/cmd/swag@latest init \
+		-g cmd/end-user-info/main.go \
+		--output docs/ \
+		--parseDependency \
+		--parseInternal
 	@cd config && sqlc generate
 	@echo "Code generated successfully"
 
