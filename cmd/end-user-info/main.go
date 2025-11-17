@@ -32,6 +32,12 @@ func init() {
 	)
 }
 
+// @title           Enduran User Info API
+// @version         1.0
+// @description     Сервис информации о пользователе (вес, рост, возраст и т.д.)
+// @BasePath        /api/v1
+
+// @schemes         http
 func main() {
 	// Load config
 	var cfg app.Config
@@ -67,7 +73,7 @@ func main() {
 	svc := svcuserinfo.New(repo)
 
 	srv := app.SetupServer(svc, cfg.Http.Addr)
-	
+
 	if err := srv.StartServer(); err != nil {
 		log.Fatal().Err(err).Msg("http server stopped")
 	}
