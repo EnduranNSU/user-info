@@ -1,3 +1,4 @@
+basePath: /api/v1
 definitions:
   github_com_EnduranNSU_end-user-info_internal_adapter_in_http_dto.CreateUserInfoRequest:
     properties:
@@ -52,6 +53,9 @@ definitions:
     type: object
 info:
   contact: {}
+  description: Сервис информации о пользователе (вес, рост, возраст и т.д.)
+  title: Enduran User Info API
+  version: "1.0"
 paths:
   /api/v1/user-info:
     get:
@@ -138,4 +142,6 @@ paths:
       summary: Получить последнюю запись
       tags:
       - user-info
+schemes:
+- http
 swagger: "2.0"

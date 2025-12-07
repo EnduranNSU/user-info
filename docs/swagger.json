@@ -1,8 +1,15 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Сервис информации о пользователе (вес, рост, возраст и т.д.)",
+        "title": "Enduran User Info API",
+        "contact": {},
+        "version": "1.0"
     },
+    "basePath": "/api/v1",
     "paths": {
         "/api/v1/user-info": {
             "get": {
