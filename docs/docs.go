@@ -179,7 +179,7 @@ const docTemplate = `{
                 "weight": {
                     "type": "number",
                     "maximum": 300,
-                    "minimum": 1,
+                    "minimum": 0.1,
                     "example": 70.5
                 }
             }
