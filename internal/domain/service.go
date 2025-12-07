@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 type Service interface {
@@ -14,8 +15,8 @@ type Service interface {
 
 type CreateUserInfoCmd struct {
 	UserID uuid.UUID
-	Weight float64
-	Height int64
-	Age    int64
+	Weight decimal.Decimal
+	Height int32
+	Age    int32
 	Date   string
 }

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 
 	"github.com/EnduranNSU/end-user-info/internal/adapter/out/postgres/gen"
 	"github.com/EnduranNSU/end-user-info/internal/domain"
@@ -26,7 +27,7 @@ func NewUserInfoRepository(db *sql.DB) domain.UserInfoRepository {
 
 func (r *UserInfoRepositoryImpl) CreateUserInfo(ctx context.Context, info *domain.UserInfo) error {
 	params := gen.CreateUserInfoParams{
-		Weight: info.Weight,
+		Weight: info.Weight.String(),
 		Height: info.Height,
 		Date:   info.Date,
 		Age:    info.Age,
@@ -64,9 +65,10 @@ func (r *UserInfoRepositoryImpl) GetLatestUserInfoByUserID(ctx context.Context, 
 		return nil, err
 	}
 
+	weight, _ := decimal.NewFromString(info.Weight)
 	domainInfo := &domain.UserInfo{
 		ID:     info.ID,
-		Weight: info.Weight,
+		Weight: weight,
 		Height: info.Height,
 		Date:   info.Date,
 		Age:    info.Age,
@@ -103,9 +105,10 @@ func (r *UserInfoRepositoryImpl) GetAllUserInfoByUserID(ctx context.Context, use
 
 	domainInfos := make([]*domain.UserInfo, len(infos))
 	for i, info := range infos {
+		weight, _ := decimal.NewFromString(info.Weight)
 		domainInfos[i] = &domain.UserInfo{
 			ID:     info.ID,
-			Weight: info.Weight,
+			Weight: weight,
 			Height: info.Height,
 			Date:   info.Date,
 			Age:    info.Age,
