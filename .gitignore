@@ -72,9 +72,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-config/config.yaml
-config/kubeconfig
-config/kubeconfig-inline
 bin
 **/gen
 **/mocks
