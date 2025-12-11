@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/user-info": {
+        "/user-info": {
             "get": {
                 "description": "Возвращает все записи информации о пользователе",
                 "produces": [
@@ -103,7 +103,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/user-info/latest": {
+        "/user-info/latest": {
             "get": {
                 "description": "Возвращает последнюю запись информации о пользователе",
                 "produces": [
@@ -222,7 +222,7 @@ var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
 	BasePath:         "/api/v1",
-	Schemes:          []string{"http"},
+	Schemes:          []string{},
 	Title:            "Enduran User Info API",
 	Description:      "Сервис информации о пользователе (вес, рост, возраст и т.д.)",
 	InfoInstanceName: "swagger",

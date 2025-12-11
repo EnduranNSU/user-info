@@ -57,7 +57,7 @@ info:
   title: Enduran User Info API
   version: "1.0"
 paths:
-  /api/v1/user-info:
+  /user-info:
     get:
       description: Возвращает все записи информации о пользователе
       parameters:
@@ -115,7 +115,7 @@ paths:
       summary: Создать пользовательскую информацию
       tags:
       - user-info
-  /api/v1/user-info/latest:
+  /user-info/latest:
     get:
       description: Возвращает последнюю запись информации о пользователе
       parameters:
@@ -142,6 +142,4 @@ paths:
       summary: Получить последнюю запись
       tags:
       - user-info
-schemes:
-- http
 swagger: "2.0"

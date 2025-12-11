@@ -5,7 +5,7 @@ sqlc:
 	@cd config && sqlc generate
 
 swag:
-	@go run github.com/swaggo/swag/cmd/swag@latest init -g internal/adapter/in/http/handler.go --output docs/ --parseDependency --parseInternal
+	@go run github.com/swaggo/swag/cmd/swag@latest init -g internal/adapter/in/http/router.go --output docs/ --parseDependency --parseInternal
 
 
 gen: sqlc swag

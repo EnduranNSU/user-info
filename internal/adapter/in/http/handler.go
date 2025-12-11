@@ -28,7 +28,7 @@ func NewUserInfoHandler(svc svcuserinfo.Service) *UserInfoHandler {
 // @Success      200  {object}  dto.UserInfoResponse
 // @Failure      400  {object}  dto.ErrorResponse
 // @Failure      500  {object}  dto.ErrorResponse
-// @Router       /api/v1/user-info [post]
+// @Router       /user-info [post]
 func (h *UserInfoHandler) Create(c *gin.Context) {
 	var req dto.CreateUserInfoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -73,7 +73,7 @@ func (h *UserInfoHandler) Create(c *gin.Context) {
 // @Success      200  {object}  dto.UserInfoResponse
 // @Failure      400  {object}  dto.ErrorResponse
 // @Failure      404  {object}  dto.ErrorResponse
-// @Router       /api/v1/user-info/latest [get]
+// @Router       /user-info/latest [get]
 func (h *UserInfoHandler) GetLatest(c *gin.Context) {
 	uidStr := c.Query("user_id")
 	uid, err := uuid.Parse(uidStr)
@@ -103,7 +103,7 @@ func (h *UserInfoHandler) GetLatest(c *gin.Context) {
 // @Success      200  {array}   dto.UserInfoResponse
 // @Failure      400  {object}  dto.ErrorResponse
 // @Failure      404  {object}  dto.ErrorResponse
-// @Router       /api/v1/user-info [get]
+// @Router       /user-info [get]
 func (h *UserInfoHandler) List(c *gin.Context) {
 	uidStr := c.Query("user_id")
 	uid, err := uuid.Parse(uidStr)

@@ -2,7 +2,7 @@ db:
   user: postgres
   password: password
   dbname: myapp
-  host: localhost
+  host: postgres
   port: 5432
 logger:
   level: info
