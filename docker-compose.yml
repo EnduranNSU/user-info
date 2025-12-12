@@ -26,7 +26,6 @@ services:
       - "5433:5432"
     volumes:
       - ./bd.sql:/docker-entrypoint-initdb.d/bd.sql
-      - postgres_data:/var/lib/postgresql/data
     networks:
       - pg-db
     healthcheck:
@@ -35,9 +34,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-
-volumes:
-  postgres_data:
 
 networks:
   pg-db:
