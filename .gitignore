@@ -73,5 +73,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 bin
-**/gen
 **/mocks
+**/gen
+**/docs

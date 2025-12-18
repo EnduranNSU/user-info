@@ -9,19 +9,16 @@ COPY ./ ./
 
 ENV GO111MODULE=on
 
-RUN go generate ./...
-RUN go mod download
-
-FROM deps AS build
-
 WORKDIR /app
 
 ENV CGO_ENABLED=0
 ARG ARTIFACT_VERSION
 
-RUN go build \
-    -o ./bin/end-user-info \
-    ./cmd/end-user-info
+RUN apk add --no-cache make
+
+RUN make build 
+
+FROM deps AS build
 
 FROM alpine:${ALPINE_VERSION} AS runtime
 
